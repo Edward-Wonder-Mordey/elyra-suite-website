@@ -1,0 +1,10 @@
+{
+  "name": "Elyra Suite",
+  "short_name": "Elyra Suite",
+  "description": "Beauty • Business • Excellence",
+  "start_url": "./#/home",
+  "display": "standalone",
+  "background_color": "#FFF8F0",
+  "theme_color": "#4A235A",
+  "icons": [{"src":"assets/logo-emblem.webp","sizes":"260x260","type":"image/webp"}]
+}
