@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://edward-wonder-mordey.github.io/elyra-suite-website/sitemap.xml
