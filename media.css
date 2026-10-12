@@ -1,0 +1,33 @@
+.media-card{padding:0}
+.media-card .card-content{padding:26px 28px 28px;position:relative}
+.card-media{height:185px;overflow:hidden;position:relative;background:linear-gradient(145deg,#f8eee4,#fff8f0)}
+.card-media:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(43,16,54,.16),transparent 48%);pointer-events:none}
+.card-media img{width:100%;height:100%;object-fit:cover;transition:transform .45s ease}
+.media-card:hover .card-media img{transform:scale(1.035)}
+.media-card .division-no{top:196px;right:22px;color:rgba(74,35,90,.12)}
+.detail-media{height:245px}
+.detail-card .card-content{padding:30px}
+.photo-panel{min-height:420px;border-radius:36px;overflow:hidden;position:relative;box-shadow:0 28px 70px rgba(74,35,90,.18);background:#ead8cb}
+.photo-panel img{width:100%;height:100%;min-height:420px;object-fit:cover;position:absolute;inset:0}
+.photo-panel:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(43,16,54,.18))}
+.photo-panel.logo-overlay:before{content:"";position:absolute;z-index:2;left:22px;bottom:22px;width:84px;height:84px;border-radius:22px;background:rgba(255,248,240,.9) url('assets/logo-emblem.webp') center/70% auto no-repeat;box-shadow:0 12px 34px rgba(43,16,54,.18);border:1px solid rgba(218,165,55,.35)}
+.hero-photo-card{width:min(500px,90vw);height:560px;border-radius:40px;overflow:hidden;position:relative;border:1px solid rgba(241,207,115,.28);box-shadow:0 28px 80px rgba(0,0,0,.3)}
+.hero-photo-card>img{width:100%;height:100%;object-fit:cover}
+.hero-photo-card:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 48%,rgba(43,16,54,.48))}
+.hero-photo-logo{position:absolute;z-index:2;left:24px;bottom:24px;width:96px;height:96px;border-radius:24px;background:rgba(255,248,240,.94);display:grid;place-items:center;box-shadow:0 12px 38px rgba(0,0,0,.25)}
+.hero-photo-logo img{width:76%;height:auto}
+.hero-photo-card .floating-note{z-index:3}
+.hero-photo-card .floating-note.one{left:18px;bottom:140px}
+.hero-photo-card .floating-note.two{right:18px;top:26px}
+.image-feature{display:grid;grid-template-columns:1fr 1fr;gap:42px;align-items:center}
+.image-feature.reverse .photo-panel{order:2}
+.shop-showcase{display:grid;grid-template-columns:1.05fr .95fr;gap:36px;align-items:center}
+.shop-showcase .photo-panel{min-height:460px}
+.shop-showcase .photo-panel img{min-height:460px}
+.gallery-card.has-photo{background:#2b1036!important;padding:0}
+.gallery-card.has-photo>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .45s ease}
+.gallery-card.has-photo:before{z-index:1;background:linear-gradient(to top,rgba(43,16,54,.82),rgba(43,16,54,.04) 62%)}
+.gallery-card.has-photo:hover>img{transform:scale(1.035)}
+.gallery-card.has-photo>div{position:relative;z-index:2;padding:28px;width:100%}
+@media(max-width:980px){.hero-photo-card{height:470px}.image-feature,.shop-showcase{grid-template-columns:1fr}.image-feature.reverse .photo-panel{order:0}.photo-panel,.photo-panel img{min-height:360px}.media-card .division-no{top:196px}}
+@media(max-width:680px){.card-media{height:210px}.media-card .division-no{top:220px}.hero-photo-card{height:430px;width:100%}.hero-photo-card .floating-note{font-size:.67rem}.photo-panel,.photo-panel img,.shop-showcase .photo-panel,.shop-showcase .photo-panel img{min-height:310px;border-radius:26px}.gallery-card.has-photo>div{padding:22px}}
