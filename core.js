@@ -5,7 +5,14 @@ const MEDIA={
  store:'assets/Image Oct 12, 2026, 06_20_53 PM-3.png',
  academy:'assets/Image Oct 12, 2026, 06_20_55 PM-4.png',
  social:'assets/Image Oct 12, 2026, 06_20_57 PM-5.png',
- business:'assets/Image Oct 12, 2026, 06_20_58 PM-6.png'
+ business:'assets/Image Oct 12, 2026, 06_20_58 PM-6.png',
+ about:'assets/Image Oct 12, 2026, 07_51_32 PM-1.png',
+ consulting:'assets/Image Oct 12, 2026, 07_51_34 PM-2.png',
+ portal:'assets/Image Oct 12, 2026, 07_51_36 PM-3.png',
+ resources:'assets/Image Oct 12, 2026, 07_51_38 PM-4.png',
+ contact:'assets/Image Oct 12, 2026, 07_51_40 PM-5.png',
+ portfolio:'assets/Image Oct 12, 2026, 07_51_42 PM-6.png',
+ storePremium:'assets/Image Oct 12, 2026, 08_12_15 PM-1.png'
 };
 const divisions=[
  {n:'01',title:'Beauty & Personal Care',icon:'✦',summary:'Hair, makeup and nail experiences designed around confidence, polish and personal expression.',groups:[['Hair',['Custom Wig Creation','Luxury Wig Sales','Wig Revamp & Restoration','Hair Installations','Hair Colouring','Bridal Hair Styling','Protective Styling','Treatment Services']],['Makeup',['Bridal Makeup','Event Makeup','Photoshoot Makeup','Fashion Makeup','Graduation Makeup','Corporate Makeup']],['Nails',['Luxury Manicures','Spa Pedicures','Acrylic Nails','Gel Nails','BIAB Nails','Nail Art','Press-On Nail Collections']]]},
@@ -23,7 +30,7 @@ const q=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[m]));
 const href=r=>`#/${r}`;
 function getRoute(){return location.hash.replace(/^#\/?/,'').split('?')[0].replace(/\/$/,'')||'home'}
-function mediaForDivision(d){return ({'01':MEDIA.beauty,'02':MEDIA.store,'03':MEDIA.bridal,'04':MEDIA.business,'05':MEDIA.business,'06':MEDIA.social,'07':MEDIA.academy})[d.n]||''}
+function mediaForDivision(d){return ({'01':MEDIA.beauty,'02':MEDIA.storePremium,'03':MEDIA.bridal,'04':MEDIA.business,'05':MEDIA.business,'06':MEDIA.social,'07':MEDIA.academy,'08':MEDIA.consulting})[d.n]||''}
 function header(route){return `<header class="header"><div class="container"><div class="nav-wrap"><a class="brand" href="#/home" aria-label="Elyra Suite home"><img src="assets/logo-horizontal.webp" alt="Elyra Suite"/></a><nav class="nav">${nav.map(([l,r])=>`<a class="${route===r?'active':''}" href="${href(r)}">${l}</a>`).join('')}<div class="dropdown"><button type="button">More ▾</button><div class="dropdown-menu">${more.map(([l,r])=>`<a class="${route===r?'active':''}" href="${href(r)}">${l}</a>`).join('')}</div></div><a class="nav-cta" href="#/contact">Book / Enquire</a></nav><button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button></div><div class="mobile" id="mobileNav">${[...nav,...more].map(([l,r])=>`<a href="${href(r)}">${l}</a>`).join('')}<a href="#/contact">Book / Enquire</a></div></div></header>`}
 function footer(){return `<footer class="footer"><div class="container"><div class="footer-grid"><div><img class="footer-logo" src="assets/logo-horizontal.webp" alt="Elyra Suite"/><p>Beauty, business support, training and practical solutions designed to help people feel confident, work effectively and grow with intention.</p><p><strong style="color:var(--gold-2)">Beauty • Business • Excellence</strong></p></div><div><h4>Beauty</h4><a href="#/beauty">Hair, Makeup & Nails</a><a href="#/bridal">Bridal & Events</a><a href="#/shop">Beauty Store</a><a href="#/portfolio">Portfolio</a></div><div><h4>Business</h4><a href="#/business">Business Support</a><a href="#/social">Social Media</a><a href="#/consulting">Consulting</a><a href="#/academy">Elyra Academy</a></div><div><h4>Connect</h4><a href="#/portal">Client Portal</a><a href="#/resources">Resources</a><a href="mailto:${BRAND.email}">${BRAND.email}</a><a href="tel:${BRAND.phoneRaw}">${BRAND.phone}</a></div></div><div class="footer-bottom"><span>© ${new Date().getFullYear()} Elyra Suite. All rights reserved.</span><span>Beauty • Business • Excellence</span></div></div></footer>`}
 function pageHero(eyebrow,title,copy,actions=''){return `<section class="page-hero"><div class="container"><div class="eyebrow" style="color:var(--gold-2)">${eyebrow}</div><h1>${title}</h1><p>${copy}</p>${actions?`<div class="hero-actions">${actions}</div>`:''}</div></section>`}
