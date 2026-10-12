@@ -25,8 +25,8 @@ const divisions=[
  {n:'07',title:'Elyra Academy',icon:'✧',summary:'Practical beauty and business training designed to build skill, confidence, service quality and entrepreneurial capability.',groups:[['Beauty Training',['Wig Making','Wig Installation','Makeup Artistry','Nail Technology']],['Business Training',['Office Administration','Customer Service','Business Management Basics','Entrepreneurship']],['Delivery',['Physical Classes','Online Courses','Video Tutorials','Certification Programmes']]]},
  {n:'08',title:'Corporate Consulting',icon:'◈',summary:'Leadership, operations and customer-experience support for organisations seeking better systems and stronger service delivery.',groups:[['Consulting',['Operations Consulting','Administrative Systems','Organisational Planning','Business Process Improvement','Customer Experience Consulting']]]}
 ];
-const nav=[['Home','home'],['About','about'],['Beauty','beauty'],['Bridal','bridal'],['Business','business'],['Academy','academy'],['Shop','shop']];
-const more=[['Social Media','social'],['Consulting','consulting'],['Portfolio','portfolio'],['Resources','resources'],['Partners','partners'],['Client Portal','portal'],['Contact','contact']];
+const nav=[['Home','home'],['About','about'],['Beauty','beauty'],['Bridal','bridal'],['Business','business'],['Academy','academy'],['Partners','partners']];
+const more=[['Shop','shop'],['Social Media','social'],['Consulting','consulting'],['Portfolio','portfolio'],['Resources','resources'],['Client Portal','portal'],['Contact','contact']];
 const q=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[m]));
 const href=r=>`#/${r}`;
