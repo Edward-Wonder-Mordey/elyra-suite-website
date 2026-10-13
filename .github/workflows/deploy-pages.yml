@@ -23,6 +23,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Build branded beauty guide PDF
+        run: |
+          if [ -f "assets/Elyra_Suite_Healthy_Makeup_Guide.b64" ]; then
+            base64 --decode "assets/Elyra_Suite_Healthy_Makeup_Guide.b64" > "assets/Elyra_Suite_Healthy_Makeup_Guide.pdf"
+          fi
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload site
