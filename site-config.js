@@ -4,6 +4,8 @@ window.ELYRA_CONFIG = {
   siteBaseUrl: 'https://edward-wonder-mordey.github.io/elyra-suite-website/',
   gaMeasurementId: '',
   eragonovaPartnerUrl: 'https://eragonova.com',
+  supabaseUrl: 'https://kqpbdagawllgonzoloao.supabase.co',
+  supabasePublishableKey: 'sb_publishable_cJ2zfuTbR-MkIJfDeTld6w_u5ioOpIN',
   social: {
     instagram: '',
     facebook: '',
