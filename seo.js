@@ -1,5 +1,5 @@
 // Route-aware page titles and descriptions for the Elyra Suite hash-routed site.
-const SEO_BASE='https://edward-wonder-mordey.github.io/elyra-suite-website/';
+const SEO_BASE = window.ELYRA_CONFIG?.siteBaseUrl || 'https://edward-wonder-mordey.github.io/elyra-suite-website/';
 const SEO={
  home:['Elyra Suite | Beauty • Business • Excellence','Premium beauty, bridal, business support, training, social media and consulting from Elyra Suite in Kumasi, Ghana.'],
  about:['About Elyra Suite | Beauty, Business & Growth','Discover the Elyra Suite mission, values, professional journey and multidisciplinary brand vision.'],
@@ -24,11 +24,12 @@ function applySEO(){
   const route=getRoute();
   const [title,description]=SEO[route]||SEO.home;
   document.title=title;
-  const set=(selector,attr,value)=>{let el=document.querySelector(selector);if(el)el.setAttribute(attr,value)};
+  const set=(selector,attr,value)=>{const el=document.querySelector(selector);if(el)el.setAttribute(attr,value)};
+  const routeUrl=SEO_BASE+(route==='home'?'':'#/'+route);
   set('meta[name="description"]','content',description);
   set('meta[property="og:title"]','content',title);
   set('meta[property="og:description"]','content',description);
-  set('meta[property="og:url"]','content',SEO_BASE+(route==='home'?'':'#/'+route));
+  set('meta[property="og:url"]','content',routeUrl);
   set('meta[name="twitter:title"]','content',title);
   set('meta[name="twitter:description"]','content',description);
 }
