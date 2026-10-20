@@ -1,3 +1,12 @@
+let elyraReviewClient = null;
+function getElyraReviewClient(){
+  const cfg=window.ELYRA_CONFIG||{};
+  if(!elyraReviewClient&&window.supabase&&cfg.supabaseUrl&&cfg.supabasePublishableKey){
+    elyraReviewClient=window.supabase.createClient(cfg.supabaseUrl,cfg.supabasePublishableKey,{auth:{persistSession:false,autoRefreshToken:false}});
+  }
+  return elyraReviewClient;
+}
+const escapeReviewText=value=>String(value??'').replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
 function portfolio(){
   const showcases=[
     ['Wigs & Hair',MEDIA.beauty,'Custom wigs, installations, styling, colour and restoration.'],
@@ -12,6 +21,29 @@ function portfolio(){
     <section class="section"><div class="container image-feature"><div class="photo-panel logo-overlay"><img src="${MEDIA.portfolio}" alt="Elyra Suite beauty portfolio showcase" loading="eager"/></div><div>${sectionHead('Portfolio Showcase','Beauty expressed across hair, makeup, nails, bridal styling and presentation.','The Elyra visual language is polished, feminine and detailed—designed around transformation, confidence and presentation.')}<p class="section-copy">Use the portfolio categories as a starting point when discussing a booking, custom look, beauty direction, training goal or presentation need.</p></div></div></section>
 
     <section class="section soft"><div class="container">${sectionHead('Portfolio Categories','A broader view of the Elyra experience.','The portfolio is organised around the work and outcomes clients most often want to explore.',true)}<div class="grid-3">${showcases.map(([t,img,d])=>`<article class="card media-card"><div class="card-media"><img src="${img}" alt="${t}" loading="lazy"/></div><div class="card-content"><h3>${t}</h3><p>${d}</p></div></article>`).join('')}</div></div></section>
+
+    <section class="section soft" id="elyra-client-feedback"><div class="container">
+      <div class="grid-2">
+        <div>
+          ${sectionHead('Client Reviews','Real experiences, shared with permission.','Feedback submitted here is reviewed by Elyra Suite. Only approved submissions with publication consent appear publicly.',true)}
+          <div id="elyraApprovedTestimonials" style="display:grid;gap:14px"><div class="card"><p>Loading approved client feedback…</p></div></div>
+        </div>
+        <article class="card">
+          <div class="eyebrow">Share your experience</div><h2>Leave feedback for Elyra Suite</h2>
+          <p class="section-copy">Your submission goes to Elyra Suite for review. It will not appear on this website unless it is approved.</p>
+          <form id="elyraTestimonialForm" class="form-grid" style="margin-top:18px">
+            <div class="field full"><label for="reviewName">Name or display name</label><input id="reviewName" name="display_name" required minlength="2" maxlength="100" autocomplete="name"></div>
+            <div class="field full"><label for="reviewOrg">Organisation (optional)</label><input id="reviewOrg" name="organization_name" maxlength="120" autocomplete="organization"></div>
+            <div class="field full"><label for="reviewProject">Project or service (optional)</label><input id="reviewProject" name="project_name" maxlength="160"></div>
+            <div class="field full"><label for="reviewQuote">Your feedback</label><textarea id="reviewQuote" name="quote" required minlength="20" maxlength="1200" rows="5"></textarea></div>
+            <div aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden"><label>Leave this field empty<input name="website" tabindex="-1" autocomplete="off"></label></div>
+            <div class="field full"><label style="display:flex;align-items:flex-start;gap:10px;font-weight:500"><input name="display_consent" type="checkbox" required style="margin-top:4px">I agree that Elyra Suite may publish this feedback and the name or organisation I provided if my submission is approved.</label></div>
+            <div class="field full"><p id="elyraTestimonialStatus" class="notice" role="status" aria-live="polite" style="display:none"></p></div>
+            <div class="field full"><button class="btn btn-plum" type="submit">Submit feedback</button></div>
+          </form>
+        </article>
+      </div>
+    </div></section>
 
     <section class="section"><div class="container">${sectionHead('Transformation Portfolio','A clear way to show the journey, not only the final image.','For services where transformation matters, portfolio entries are organised to show the brief or starting point, the service process and the finished result. Client imagery is used with appropriate permission.',true)}<div class="grid-3"><article class="card"><div class="card-icon">01</div><h3>Starting Point</h3><p>The original condition, inspiration, event brief or client objective establishes what the service needs to achieve.</p></article><article class="card"><div class="card-icon">02</div><h3>Service Process</h3><p>Preparation, technique, product selection, styling and coordination show the professional work behind the result.</p></article><article class="card"><div class="card-icon">03</div><h3>Finished Result</h3><p>The final look is presented with attention to polish, suitability, detail and the overall Elyra experience.</p></article></div></div></section>
     ${cta('See a style direction you like?','Use it as a starting point and describe the look, event, service or result you want.','Book / Enquire')}
@@ -61,6 +93,43 @@ function wire(){
     form.onsubmit=e=>{e.preventDefault();if(!form.reportValidity())return;const fd=new FormData(form);window.location.href=emailHref(`Elyra Suite Enquiry – ${fd.get('service')}`,contactBody())};
     const wa=q('#contactWhatsApp');
     if(wa)wa.onclick=()=>{if(!form.reportValidity())return;window.open(`https://wa.me/${BRAND.phoneRaw}?text=${encodeURIComponent(contactBody())}`,'_blank','noopener')};
+  }
+
+  const reviewList=q('#elyraApprovedTestimonials');
+  if(reviewList){
+    const client=getElyraReviewClient();
+    if(!client){reviewList.innerHTML='<div class="card"><p>Client feedback is temporarily unavailable. Please try again later.</p></div>';}
+    else client.from('testimonials').select('id,display_name,organization_name,project_name,quote,approved_at').eq('status','approved').eq('display_consent',true).order('approved_at',{ascending:false}).limit(8).then(({data,error})=>{
+      if(error){reviewList.innerHTML='<div class="card"><p>Approved feedback could not be loaded right now.</p></div>';return;}
+      reviewList.innerHTML=data?.length?data.map(item=>\`<article class="card"><div class="eyebrow">Client feedback</div><blockquote style="margin-top:10px;line-height:1.8">“\${escapeReviewText(item.quote)}”</blockquote><p style="margin-top:14px;font-weight:800;color:var(--plum)">\${escapeReviewText(item.display_name)}</p><p style="font-size:.82rem;color:var(--muted)">\${[item.organization_name,item.project_name].filter(Boolean).map(escapeReviewText).join(' · ')}</p></article>\`).join(''):'<div class="card"><p>Approved client feedback will appear here.</p></div>';
+    });
+  }
+
+  const reviewForm=q('#elyraTestimonialForm');
+  if(reviewForm){
+    reviewForm.addEventListener('submit',async e=>{
+      e.preventDefault();
+      if(!reviewForm.reportValidity())return;
+      const fd=new FormData(reviewForm), status=q('#elyraTestimonialStatus'), button=reviewForm.querySelector('button[type="submit"]');
+      const showReviewMessage=message=>{status.textContent=message;status.style.display='block';};
+      if(fd.get('website')){showReviewMessage('Thanks. Your feedback has been sent for review.');reviewForm.reset();return;}
+      const client=getElyraReviewClient();
+      if(!client){showReviewMessage('We could not submit your feedback right now. Please try again later.');return;}
+      button.disabled=true;button.textContent='Submitting…';
+      try{
+        const {error}=await client.from('testimonials').insert({
+          display_name:String(fd.get('display_name')).trim(),
+          organization_name:String(fd.get('organization_name')||'').trim()||null,
+          project_name:String(fd.get('project_name')||'').trim()||null,
+          quote:String(fd.get('quote')).trim(),
+          display_consent:fd.get('display_consent')==='on'
+        });
+        if(error)throw error;
+        reviewForm.reset();
+        showReviewMessage('Thank you. Your feedback has been submitted for review and will appear here only if Elyra Suite approves it.');
+      }catch(error){showReviewMessage('We could not submit your feedback right now. Please try again later.');}
+      finally{button.disabled=false;button.textContent='Submit feedback';}
+    });
   }
 
   const academyForm=q('#academyForm');
