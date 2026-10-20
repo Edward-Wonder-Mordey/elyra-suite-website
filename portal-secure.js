@@ -106,7 +106,7 @@
 
   function testimonials(){
     if(!isAdmin())return notice('Administrator access required.','error');
-    return \`\${sectionHead('Client feedback','Review testimonials','Submissions remain private until you approve them for publication.')}<div id="testimonialReviewList"><div class="card"><p>Loading submissions…</p></div></div>\`;
+    return `${sectionHead('Client feedback','Review testimonials','Submissions remain private until you approve them for publication.')}<div id="testimonialReviewList"><div class="card"><p>Loading submissions…</p></div></div>`;
   }
 
   async function loadTestimonialReviews(){
@@ -119,11 +119,11 @@
       const meta=[item.organization_name,item.project_name,fmt(item.created_at)].filter(Boolean).map(esc).join(' · ');
       const consent=item.display_consent?'Publication consent given':'Publication consent not given';
       const actions=item.status==='pending'
-        ? \`\${item.display_consent?\`<button class="btn btn-plum testimonialReviewAction" data-id="\${esc(item.id)}" data-next="approved">Approve &amp; publish</button>\`:''}<button class="btn btn-outline testimonialReviewAction" data-id="\${esc(item.id)}" data-next="rejected">Reject</button>\`
+        ? `${item.display_consent?`<button class="btn btn-plum testimonialReviewAction" data-id="${esc(item.id)}" data-next="approved">Approve &amp; publish</button>`:''}<button class="btn btn-outline testimonialReviewAction" data-id="${esc(item.id)}" data-next="rejected">Reject</button>`
         : item.status==='approved'
-          ? \`<button class="btn btn-outline testimonialReviewAction" data-id="\${esc(item.id)}" data-next="rejected">Unpublish</button>\`
-          : \`<button class="btn btn-outline testimonialReviewAction" data-id="\${esc(item.id)}" data-next="pending">Return to review</button>\`;
-      return \`<article class="card" style="margin:14px 0"><div class="eyebrow">\${esc(item.status)} · \${esc(consent)}</div><h3 style="margin-top:8px">\${esc(item.display_name)}</h3><p style="font-size:.82rem;color:var(--muted)">\${meta}</p><blockquote style="margin:14px 0;line-height:1.8">“\${esc(item.quote)}”</blockquote><div style="display:flex;gap:8px;flex-wrap:wrap">\${actions}</div></article>\`;
+          ? `<button class="btn btn-outline testimonialReviewAction" data-id="${esc(item.id)}" data-next="rejected">Unpublish</button>`
+          : `<button class="btn btn-outline testimonialReviewAction" data-id="${esc(item.id)}" data-next="pending">Return to review</button>`;
+      return `<article class="card" style="margin:14px 0"><div class="eyebrow">${esc(item.status)} · ${esc(consent)}</div><h3 style="margin-top:8px">${esc(item.display_name)}</h3><p style="font-size:.82rem;color:var(--muted)">${meta}</p><blockquote style="margin:14px 0;line-height:1.8">“${esc(item.quote)}”</blockquote><div style="display:flex;gap:8px;flex-wrap:wrap">${actions}</div></article>`;
     }).join('');
   }
 
