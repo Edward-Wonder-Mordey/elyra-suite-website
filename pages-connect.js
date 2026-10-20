@@ -101,7 +101,7 @@ function wire(){
     if(!client){reviewList.innerHTML='<div class="card"><p>Client feedback is temporarily unavailable. Please try again later.</p></div>';}
     else client.from('testimonials').select('id,display_name,organization_name,project_name,quote,approved_at').eq('status','approved').eq('display_consent',true).order('approved_at',{ascending:false}).limit(8).then(({data,error})=>{
       if(error){reviewList.innerHTML='<div class="card"><p>Approved feedback could not be loaded right now.</p></div>';return;}
-      reviewList.innerHTML=data?.length?data.map(item=>\`<article class="card"><div class="eyebrow">Client feedback</div><blockquote style="margin-top:10px;line-height:1.8">“\${escapeReviewText(item.quote)}”</blockquote><p style="margin-top:14px;font-weight:800;color:var(--plum)">\${escapeReviewText(item.display_name)}</p><p style="font-size:.82rem;color:var(--muted)">\${[item.organization_name,item.project_name].filter(Boolean).map(escapeReviewText).join(' · ')}</p></article>\`).join(''):'<div class="card"><p>Approved client feedback will appear here.</p></div>';
+      reviewList.innerHTML=data?.length?data.map(item=>`<article class="card"><div class="eyebrow">Client feedback</div><blockquote style="margin-top:10px;line-height:1.8">“${escapeReviewText(item.quote)}”</blockquote><p style="margin-top:14px;font-weight:800;color:var(--plum)">${escapeReviewText(item.display_name)}</p><p style="font-size:.82rem;color:var(--muted)">${[item.organization_name,item.project_name].filter(Boolean).map(escapeReviewText).join(' · ')}</p></article>`).join(''):'<div class="card"><p>Approved client feedback will appear here.</p></div>';
     });
   }
 
