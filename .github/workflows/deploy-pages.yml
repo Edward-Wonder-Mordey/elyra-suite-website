@@ -25,8 +25,13 @@ jobs:
         uses: actions/checkout@v4
       - name: Build branded beauty guide PDF
         run: |
-          if [ -f "assets/Elyra_Suite_Healthy_Makeup_Guide.b64" ]; then
+          if [ -s "assets/Elyra_Suite_Healthy_Makeup_Guide.pdf" ]; then
+            echo "Using the checked-in Elyra Suite guide PDF."
+          elif [ -f "assets/Elyra_Suite_Healthy_Makeup_Guide.b64" ]; then
             base64 --decode "assets/Elyra_Suite_Healthy_Makeup_Guide.b64" > "assets/Elyra_Suite_Healthy_Makeup_Guide.pdf"
+          else
+            echo "::error::The Elyra Suite guide PDF and its source are both missing."
+            exit 1
           fi
       - name: Configure Pages
         uses: actions/configure-pages@v5
