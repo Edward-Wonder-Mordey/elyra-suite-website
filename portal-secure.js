@@ -3,7 +3,7 @@
   const cfg=window.ELYRA_CONFIG||{};
   if(!window.supabase||!cfg.supabaseUrl||!cfg.supabasePublishableKey)return;
   const sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabasePublishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-  let state={session:null,profile:null,memberships:[],accounts:[],engagements:[],appointments:[],updates:[],documents:[],invoices:[],enrollments:[],orders:[],tickets:[],messages:[],notifications:[],profiles:[]};
+  let state={session:null,profile:null,memberships:[],accounts:[],engagements:[],appointments:[],updates:[],documents:[],invoices:[],enrollments:[],orders:[],tickets:[],messages:[],notifications:[],profiles:[],testimonials:[]};
   const esc=s=>String(s??'').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[m]));
   const fmt=d=>d?new Date(d).toLocaleString(undefined,{dateStyle:'medium',timeStyle:String(d).includes('T')?'short':undefined}):'—';
   const money=(n,c='GHS')=>`${c} ${Number(n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
@@ -56,6 +56,7 @@
   const tabsForRole=()=>{
     const base=[['dashboard','Dashboard'],['appointments','Appointments'],['engagements','Services & Engagements'],['documents','Documents'],['billing','Billing'],['academy','Academy'],['orders','Orders'],['support','Support'],['guide','Access Guide'],['account','Account']];
     if(isStaff())base.splice(base.length-2,0,['operations',isAdmin()?'Admin':'Operations']);
+    if(isAdmin())base.splice(base.length-2,0,['testimonials','Testimonials']);
     return base;
   };
 
@@ -103,8 +104,31 @@
     return `${sectionHead(isAdmin()?'Administrator Workspace':'Operations Workspace','Manage Elyra Suite portal records','Operational tools for clients, appointments, engagements, Academy, billing, orders and support.')}<div class="grid-2">${adminInvite}<article class="card"><div class="eyebrow">Client account</div><h3>Create client / organisation</h3><form id="createAccount" class="form-grid"><div class="field"><label>Type</label><select name="account_type"><option>individual</option><option>organization</option></select></div><div class="field"><label>Display name</label><input name="display_name" required></div><div class="field"><label>Contact email</label><input name="email" type="email"></div><div class="field"><label>Contact phone</label><input name="phone"></div><button class="btn btn-plum">Create account</button></form></article><article class="card"><div class="eyebrow">Engagement</div><h3>Create service engagement</h3><form id="createEngagement" class="form-grid"><div class="field full"><label>Account</label><select name="account_id" required><option value="">Select</option>${accountOptions}</select></div><div class="field"><label>Code</label><input name="code" required></div><div class="field"><label>Service area</label><input name="service_area"></div><div class="field full"><label>Title</label><input name="title" required></div><div class="field full"><label>Summary</label><textarea name="summary"></textarea></div><button class="btn btn-plum">Create engagement</button></form></article><article class="card"><div class="eyebrow">Appointment</div><h3>Schedule appointment</h3><form id="createAppointment" class="form-grid"><div class="field"><label>Account</label><select name="account_id" required>${accountOptions}</select></div><div class="field"><label>Engagement</label><select name="engagement_id"><option value="">Optional</option>${engagementOptions}</select></div><div class="field full"><label>Title</label><input name="title" required></div><div class="field"><label>Starts</label><input name="starts_at" type="datetime-local" required></div><div class="field"><label>Location</label><input name="location_text"></div><button class="btn btn-plum">Schedule</button></form></article><article class="card"><div class="eyebrow">Billing</div><h3>Create invoice</h3><form id="createInvoice" class="form-grid"><div class="field"><label>Account</label><select name="account_id" required>${accountOptions}</select></div><div class="field"><label>Engagement</label><select name="engagement_id"><option value="">Optional</option>${engagementOptions}</select></div><div class="field"><label>Invoice #</label><input name="invoice_number" required></div><div class="field"><label>Amount</label><input name="amount" type="number" min="0" step="0.01" required></div><div class="field full"><label>Description</label><input name="description"></div><button class="btn btn-plum">Create invoice</button></form></article><article class="card"><div class="eyebrow">Academy</div><h3>Add enrollment</h3><form id="createEnrollment" class="form-grid"><div class="field full"><label>Account</label><select name="account_id" required>${accountOptions}</select></div><div class="field"><label>Programme</label><input name="programme_name" required></div><div class="field"><label>Format</label><input name="delivery_format"></div><button class="btn btn-plum">Add enrollment</button></form></article><article class="card"><div class="eyebrow">Store</div><h3>Create order record</h3><form id="createOrder" class="form-grid"><div class="field"><label>Account</label><select name="account_id" required>${accountOptions}</select></div><div class="field"><label>Order #</label><input name="order_number" required></div><div class="field full"><label>Summary</label><input name="summary"></div><div class="field"><label>Total</label><input name="total_amount" type="number" min="0" step="0.01"></div><div class="field"><label>Fulfilment</label><input name="fulfillment_method"></div><button class="btn btn-plum">Create order</button></form></article>${users}</div>`;
   }
 
-  const panels={dashboard,appointments,engagements,documents,billing,academy,orders,support,guide,account,operations};
-  function showTab(tab){const p=document.querySelector('#portalPanel');if(!p)return;p.innerHTML=(panels[tab]||dashboard)();document.querySelectorAll('.portal-tab').forEach(b=>b.className=`btn ${b.dataset.tab===tab?'btn-plum':'btn-outline'} portal-tab`);wirePanel(tab);}
+  function testimonials(){
+    if(!isAdmin())return notice('Administrator access required.','error');
+    return \`\${sectionHead('Client feedback','Review testimonials','Submissions remain private until you approve them for publication.')}<div id="testimonialReviewList"><div class="card"><p>Loading submissions…</p></div></div>\`;
+  }
+
+  async function loadTestimonialReviews(){
+    const holder=document.querySelector('#testimonialReviewList');
+    if(!holder||!isAdmin())return;
+    const {data,error}=await sb.from('testimonials').select('id,display_name,organization_name,project_name,quote,status,display_consent,created_at').order('created_at',{ascending:false});
+    if(error){holder.innerHTML=notice('Could not load submissions: '+error.message,'error');return;}
+    if(!data?.length){holder.innerHTML=notice('There are no testimonial submissions yet.');return;}
+    holder.innerHTML=data.map(item=>{
+      const meta=[item.organization_name,item.project_name,fmt(item.created_at)].filter(Boolean).map(esc).join(' · ');
+      const consent=item.display_consent?'Publication consent given':'Publication consent not given';
+      const actions=item.status==='pending'
+        ? \`\${item.display_consent?\`<button class="btn btn-plum testimonialReviewAction" data-id="\${esc(item.id)}" data-next="approved">Approve &amp; publish</button>\`:''}<button class="btn btn-outline testimonialReviewAction" data-id="\${esc(item.id)}" data-next="rejected">Reject</button>\`
+        : item.status==='approved'
+          ? \`<button class="btn btn-outline testimonialReviewAction" data-id="\${esc(item.id)}" data-next="rejected">Unpublish</button>\`
+          : \`<button class="btn btn-outline testimonialReviewAction" data-id="\${esc(item.id)}" data-next="pending">Return to review</button>\`;
+      return \`<article class="card" style="margin:14px 0"><div class="eyebrow">\${esc(item.status)} · \${esc(consent)}</div><h3 style="margin-top:8px">\${esc(item.display_name)}</h3><p style="font-size:.82rem;color:var(--muted)">\${meta}</p><blockquote style="margin:14px 0;line-height:1.8">“\${esc(item.quote)}”</blockquote><div style="display:flex;gap:8px;flex-wrap:wrap">\${actions}</div></article>\`;
+    }).join('');
+  }
+
+  const panels={dashboard,appointments,engagements,documents,billing,academy,orders,support,guide,account,operations,testimonials};
+  function showTab(tab){const p=document.querySelector('#portalPanel');if(!p)return;p.innerHTML=(panels[tab]||dashboard)();document.querySelectorAll('.portal-tab').forEach(b=>b.className=`btn ${b.dataset.tab===tab?'btn-plum':'btn-outline'} portal-tab`);wirePanel(tab);if(tab==='testimonials')loadTestimonialReviews();}
 
   function renderPortal(){const root=portalRoot();if(!root)return;root.innerHTML=state.session?shell():loginView();wireBase();if(state.session)showTab('dashboard');}
 
@@ -120,6 +144,18 @@
   }
 
   function wirePanel(tab){
+    document.querySelectorAll('.testimonialReviewAction').forEach(button=>button.addEventListener('click',async()=>{
+      if(!isAdmin())return setMsg('Administrator access required.',true);
+      const approved=button.dataset.next==='approved';
+      const {error}=await sb.from('testimonials').update({
+        status:button.dataset.next,
+        approved_at:approved?new Date().toISOString():null,
+        approved_by:approved?state.session.user.id:null
+      }).eq('id',button.dataset.id);
+      if(error){setMsg(error.message,true);return;}
+      setMsg(approved?'Feedback approved and published.':button.dataset.next==='pending'?'Feedback returned to review.':'Feedback unpublished.');
+      await loadTestimonialReviews();
+    }));
     document.querySelectorAll('.download-doc').forEach(b=>b.addEventListener('click',async()=>{const {data,error}=await sb.storage.from(b.dataset.bucket).createSignedUrl(b.dataset.path,120);if(error)return setMsg(error.message,true);window.open(data.signedUrl,'_blank','noopener');}));
     document.querySelector('#profileForm')?.addEventListener('submit',e=>{e.preventDefault();const fd=new FormData(e.target);run(async()=>{const {error}=await sb.rpc('update_my_profile',{p_full_name:fd.get('full_name'),p_phone:fd.get('phone'),p_job_title:fd.get('job_title'),p_avatar_path:state.profile?.avatar_path||null});if(error)throw error;},'Profile updated.');});
     document.querySelector('#passwordForm')?.addEventListener('submit',e=>{e.preventDefault();const fd=new FormData(e.target);run(async()=>{const {error}=await sb.auth.updateUser({password:String(fd.get('password'))});if(error)throw error;},'Password updated.');});
