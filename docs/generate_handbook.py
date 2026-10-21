@@ -11,7 +11,7 @@ from docx.enum.table import WD_ROW_HEIGHT_RULE
 from pathlib import Path
 
 OUT = 'docs/Elyra_Suite_Website_Owners_Handbook.docx'
-LOGO = 'assets/Elyra Suite Monogram Logo.png'
+LOGO = 'docs/Elyra_Suite_Luxury_Monogram_Logo.jpg'
 
 PLUM = '4A235A'
 ROSE = 'B76E79'
