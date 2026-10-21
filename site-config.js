@@ -2,7 +2,7 @@
 // Keep secrets out of this file: everything here is delivered to the browser.
 window.ELYRA_CONFIG = {
   siteBaseUrl: 'https://edward-wonder-mordey.github.io/elyra-suite-website/',
-  gaMeasurementId: '',
+  gaMeasurementId: 'G-3ECH94LV1S',
   eragonovaPartnerUrl: 'https://eragonova.com',
   supabaseUrl: 'https://kqpbdagawllgonzoloao.supabase.co',
   supabasePublishableKey: 'sb_publishable_cJ2zfuTbR-MkIJfDeTld6w_u5ioOpIN',
