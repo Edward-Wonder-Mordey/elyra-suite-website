@@ -587,11 +587,11 @@ add_bullets(doc, [
     'Do not change the relationship wording to imply ownership, merger or group structure unless that becomes factually correct.'
 ])
 add_heading(doc, '11.2 Client Portal status', 2)
-add_body(doc, 'The Client Portal page is currently a public presentation of what an organised client experience can contain. It is not a real authenticated customer account system yet.')
-add_table(doc, ['Shown publicly now', 'What a real portal would still need'], [
-('Appointments','Authentication and user-specific appointment data'),('Documents','Secure private storage and permission controls'),('Training','User-specific enrolment and protected materials'),('Payments & Updates','Payment integration, records and private account history')
+add_body(doc, 'The Client Portal is now a secure, authenticated Supabase-backed portal. Access is limited to authorized users and data is protected by Row Level Security. The public site does not offer open account registration.')
+add_table(doc, ['Portal area', 'Current status'], [
+('Authentication and account access','Live through Supabase Auth; accounts are administered, not openly self-registered.'),('Account-specific records','Protected using role and account membership rules.'),('Testimonials moderation','Admin-only review controls are provided in the secure portal.'),('Online checkout and payments','Not implemented; do not advertise as available.')
 ])
-add_note(doc, 'Security warning', 'Do not try to create “password protection” by hiding text in JavaScript or placing client documents in public assets. A real portal requires proper authentication, private storage and access control.', 'danger')
+add_note(doc, 'Security warning', 'Do not put passwords, service-role keys, private API keys or client records in browser-delivered files or public assets. Preserve Supabase Auth and Row Level Security; do not create a fake client-side login.', 'danger')
 
 page_break(doc)
 
@@ -844,7 +844,7 @@ page_break(doc)
 # APPENDIX B CURRENT STATUS
 add_heading(doc, 'Appendix B — Current Functional Status', 1)
 status_rows = [
-('Email enquiries','LIVE','Primary contact method; mailto-based.'),('WhatsApp enquiries','LIVE','Secondary option.'),('GitHub Pages hosting','LIVE','Automatic deployment from main.'),('Responsive/mobile layout','LIVE','Controlled by styles.css and media.css.'),('Policies','LIVE','Privacy, Terms, Booking/Cancellation, Store/Returns.'),('SEO metadata','LIVE','Base metadata + route-specific titles/descriptions.'),('Analytics','READY, NOT ACTIVE','analytics.js contains no measurement ID yet.'),('Portfolio structure','LIVE','Representative brand visuals + framework for genuine work.'),('Testimonials','COLLECTION READY','No invented testimonials; email submission/permission path exists.'),('Store','ENQUIRY-BASED','No cart, checkout or payment system.'),('Academy registration','ENQUIRY-BASED','Email-first registration request; no student database.'),('Client Portal','FRONT-END CONCEPT','No authentication/private backend yet.'),('Online payments','NOT IMPLEMENTED','Requires secure provider/backend approach.'),('Custom domain','NOT YET CONNECTED','Current GitHub Pages URL remains live.'),('Professional domain email','NOT YET CONNECTED','Current Gmail remains primary.'),('Official social links','ADD WHEN CONFIRMED','Only add verified official accounts.'),
+('Email enquiries','LIVE','Primary contact method; mailto-based.'),('WhatsApp enquiries','LIVE','Secondary option.'),('GitHub Pages hosting','LIVE','Automatic deployment from main.'),('Responsive/mobile layout','LIVE','Controlled by styles.css and media.css.'),('Policies','LIVE','Privacy, Terms, Booking/Cancellation, Store/Returns.'),('SEO metadata','LIVE','Base metadata + route-specific titles/descriptions.'),('Analytics','READY, NOT ACTIVE','analytics.js contains no measurement ID yet.'),('Portfolio structure','LIVE','Representative brand visuals + framework for genuine work.'),('Testimonials','LIVE — MODERATED','Portfolio form submits to Supabase; public page shows only approved submissions with consent.'),('Store','ENQUIRY-BASED','No cart, checkout or payment system.'),('Academy registration','ENQUIRY-BASED','Email-first registration request; no student database.'),('Client / admin portal','LIVE — AUTHENTICATED','Supabase Auth, role/account access and Row Level Security; testimonial moderation is admin-only.'),('Online checkout/payments','NOT IMPLEMENTED','Store is enquiry-led; no online payment processor.'),('Custom domain','NOT YET CONNECTED','Current GitHub Pages URL remains live.'),('Professional domain email','NOT YET CONNECTED','Current Gmail remains primary.'),('Official social links','ADD WHEN CONFIRMED','Only add verified official accounts.'),
 ]
 add_table(doc, ['Feature', 'Status', 'Meaning'], status_rows, widths=[Cm(4.6),Cm(3.7),Cm(8.8)], small=True)
 
@@ -872,6 +872,41 @@ add_bullets(doc, [
 ])
 add_note(doc, 'Keep this handbook with the website', 'The goal is that a future owner, assistant, designer or developer can understand the Elyra Suite website without having to rediscover how it was built.', 'brand')
 
+
+# 16 CURRENT CLIENT REVIEW AND ADMIN PORTAL
+add_heading(doc, '16. Client Reviews and the Secure Admin Portal', 1)
+add_body(doc, 'The Portfolio page includes a real client-feedback form. Submissions go to Elyra Suite for review. The public page displays only submissions that have been approved and have publication consent. The form is not a promise of instant publication.')
+add_table(doc, ['Area', 'Current file / system', 'Owner guidance'], [
+('Portfolio review section','pages-connect.js','Contains the Portfolio route, approved feedback display and submission form. Keep it truthful and test it after edits.'),
+('Secure owner portal','portal-secure.js, loaded by the portal route','Uses Supabase Auth and role-based access. The Testimonials tab is for the admin role.'),
+('Database moderation rules','supabase/migrations/20261020170457_create_elyra_testimonial_moderation.sql','Defines the testimonials data and Row Level Security. Apply backend changes through a reviewed migration; do not hand-edit production data as a workaround.'),
+('Public configuration','site-config.js','Contains only browser-safe project URL and publishable key values. Never put a service-role key or password in a public file.')
+], widths=[Cm(3.6), Cm(5.5), Cm(8.4)], small=True)
+add_heading(doc, '16.1 Review, approve or remove feedback', 2)
+add_steps(doc, [
+'Sign in to the Elyra Suite admin portal using an authorized admin account.',
+'Open the Testimonials tab and inspect each submission.',
+'Approve only genuine client feedback when the client agreed that it can be published. Reject unsuitable submissions.',
+'Use unpublish or return-to-review controls if a published item must be hidden or reviewed again.',
+'Check the public Portfolio page after approval. Only approved feedback with publication consent should appear.'
+])
+add_note(doc, 'Evidence and consent', 'Never invent testimonials, clients, outcomes, before-and-after results or review screenshots. Keep submissions private until approval. If a client withdraws permission, unpublish the feedback promptly.', 'safe')
+add_heading(doc, '16.2 Current system status', 2)
+add_body(doc, 'The owner/client portal is now backed by Supabase authentication, account records and Row Level Security. The admin portal contains a review queue for client feedback. The site does not provide a public account-registration path. Product checkout and online payment processing are still not implemented.')
+add_table(doc, ['Feature', 'Current status', 'Meaning'], [
+('Email and WhatsApp enquiries','LIVE','Email is primary; WhatsApp is secondary.'),
+('GitHub Pages hosting','LIVE','Changes on main trigger a GitHub Actions deployment.'),
+('Responsive layout and policy pages','LIVE','Test service and policy page changes on mobile.'),
+('SEO metadata','LIVE','Route-specific metadata is generated from the current SEO configuration.'),
+('Analytics','READY, NOT ACTIVE','Only enter a real measurement ID after one is created.'),
+('Portfolio feedback','LIVE — MODERATED','Public form; only approved, consented feedback is visible. No fabricated review content.'),
+('Admin/client portal','LIVE — AUTHENTICATED','Supabase Auth and Row Level Security; access depends on assigned role/account.'),
+('Store checkout / online payments','NOT IMPLEMENTED','The store is enquiry-led; do not promise online checkout or payment processing.'),
+('Academy enrolment','ENQUIRY-BASED','No public student account system is documented.'),
+('Custom domain and professional email','NOT CONNECTED','Use the current GitHub Pages URL and Gmail.')
+], widths=[Cm(4.1), Cm(3.8), Cm(9.6)], small=True)
+add_body(doc, 'Backend project ref: kqpbdagawllgonzoloao. Keep the Elyra database and its credentials separate from Eragonova. The GitHub Pages workflow uses the existing checked-in guide PDF if temporary guide decoding is not available.')
+
 # Header after content - section first page remains different
 header = doc.sections[0].header
 p = header.paragraphs[0]
@@ -893,5 +928,12 @@ props.author = 'Elyra Suite'
 props.keywords = 'Elyra Suite, website handbook, GitHub Pages, maintenance, owner guide'
 
 # Avoid orphan headings by setting headings already; save
+for _tbl in doc.tables:
+    for _ri, _row in enumerate(_tbl.rows):
+        _trpr=_row._tr.get_or_add_trPr()
+        _cant=OxmlElement('w:cantSplit')
+        _trpr.append(_cant)
+        if _ri==0:
+            _hdr=OxmlElement('w:tblHeader'); _hdr.set(qn('w:val'),'true'); _trpr.append(_hdr)
 doc.save(OUT)
 print(OUT)
