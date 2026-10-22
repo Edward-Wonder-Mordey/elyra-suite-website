@@ -261,7 +261,7 @@ cover_rows = [
     ('Live website', 'https://edward-wonder-mordey.github.io/elyra-suite-website/'),
     ('GitHub repository', 'Edward-Wonder-Mordey/elyra-suite-website'),
     ('Primary email', 'elyrasuite@gmail.com'),
-    ('Handbook version', 'Version 1.0 — 12 October 2026'),
+    ('Handbook version', 'Version 1.2 — 22 October 2026'),
 ]
 for i,(a,b) in enumerate(cover_rows):
     box.cell(i,0).text=a; box.cell(i,1).text=b
@@ -323,11 +323,11 @@ quick_rows = [
 ('Homepage, About, Beauty wording','pages-primary.js','Homepage is later enhanced by unity.js.','GREEN/AMBER'),
 ('Bridal page','page-bridal.js','Edit packages, event wording and CTA text here.','GREEN'),
 ('Business, Social, Academy, Shop, Consulting','pages-business.js','Academy forms and store enquiry text also live here.','GREEN/AMBER'),
-('Portfolio, Resources, Partners, Portal, Contact','pages-connect.js','Contact form and route/render logic are also here.','GREEN/AMBER'),
+('Portfolio, Resources, Partners, Portal, Contact','pages-connect.js + portal-secure.js','Public page routes and the authenticated client/admin portal. Supabase controls protected access.','GREEN/AMBER'),
 ('Homepage hero visual + “Explore the Elyra Experience” + footer image band','unity.js','This file intentionally modifies the original homepage/footer after page definitions load.','AMBER'),
 ('Privacy, Terms, Booking, Returns, testimonials','enhancements.js','Update policy date if policy wording changes.','AMBER'),
 ('Page titles/descriptions shown to search/social systems','seo.js','Keep route names matched to the real website.','AMBER'),
-('Google Analytics measurement ID','analytics.js','Leave blank until a real ID exists. Update privacy wording after enabling tracking.','AMBER'),
+('Google Analytics measurement ID','site-config.js + analytics.js','Current GA4 ID: G-3ECH94LV1S. Keep privacy wording aligned with enabled tracking.','AMBER'),
 ('General colours, spacing, cards, buttons, desktop styling','styles.css','Avoid broad changes unless you can test every page.','AMBER'),
 ('Mobile/tablet layout','media.css','Always test on a phone after changing.','AMBER'),
 ('Images and logos','assets/ + MEDIA in core.js','Upload image first, then point MEDIA to the filename.','GREEN'),
@@ -343,7 +343,7 @@ page_break(doc)
 
 # 3 STRUCTURE
 add_heading(doc, '3. How the Website Works — Plain English', 1)
-add_body(doc, 'The website is a lightweight static website hosted by GitHub Pages. “Static” means there is no private database or server application running behind the public pages. The website files themselves contain the text, images, layout and simple form behaviour.')
+add_body(doc, 'The public pages are static files hosted by GitHub Pages. Some features use a secure Supabase backend: the client/admin portal, authentication, account-specific records and testimonial moderation. Supabase Auth and Row Level Security control access to protected data.')
 add_heading(doc, '3.1 What happens when a visitor opens the site', 2)
 add_steps(doc, [
     'index.html loads the website shell, fonts, styles and JavaScript files.',
@@ -352,7 +352,7 @@ add_steps(doc, [
     'unity.js adds the image-rich homepage/footer presentation.',
     'enhancements.js adds policies, testimonial collection and trust-related sections.',
     'seo.js changes the page title and description to match the page being viewed.',
-    'analytics.js is ready for analytics, but currently does not track visitors because no measurement ID has been added.',
+    'analytics.js loads Google Analytics 4 using the Measurement ID in site-config.js. The current ID is G-3ECH94LV1S; the matching Elyra stream was recently shown as receiving traffic. Hash-route navigation is tracked as visitors move between pages.',
     'GitHub Pages serves the finished files publicly.'
 ])
 add_heading(doc, '3.2 What the #/home style address means', 2)
@@ -648,10 +648,7 @@ page_break(doc)
 # 14 ANALYTICS SOCIAL DOMAIN
 add_heading(doc, '14. Analytics, Social Media, Custom Domain and Professional Email', 1)
 add_heading(doc, '14.1 Google Analytics', 2)
-add_body(doc, 'analytics.js is ready but inactive. The current line is:')
-add_code(doc, "const ELYRA_ANALYTICS_ID='';")
-add_body(doc, 'When a real Google Analytics measurement ID is created, paste the value between the quotation marks, for example G-XXXXXXXXXX. Then update the Privacy Policy to explain analytics and any cookies/identifiers that are actually used.')
-add_note(doc, 'Do not invent an analytics ID', 'Only use the ID from the business’s real analytics property. Until then, keeping the value blank means no Google Analytics script loads.', 'safe')
+add_body(doc, 'Google Analytics 4 is configured. The current Measurement ID is G-3ECH94LV1S in site-config.js, matching the Elyra web stream. If the ID changes, copy the exact value from Analytics Admin and confirm activity in Realtime. Keep the Privacy Policy aligned with the analytics actually enabled.')
 add_heading(doc, '14.2 Adding official social media links', 2)
 add_steps(doc, [
     'Confirm the official Instagram, Facebook, TikTok, LinkedIn or YouTube URLs.',
@@ -844,7 +841,7 @@ page_break(doc)
 # APPENDIX B CURRENT STATUS
 add_heading(doc, 'Appendix B — Current Functional Status', 1)
 status_rows = [
-('Email enquiries','LIVE','Primary contact method; mailto-based.'),('WhatsApp enquiries','LIVE','Secondary option.'),('GitHub Pages hosting','LIVE','Automatic deployment from main.'),('Responsive/mobile layout','LIVE','Controlled by styles.css and media.css.'),('Policies','LIVE','Privacy, Terms, Booking/Cancellation, Store/Returns.'),('SEO metadata','LIVE','Base metadata + route-specific titles/descriptions.'),('Analytics','READY, NOT ACTIVE','analytics.js contains no measurement ID yet.'),('Portfolio structure','LIVE','Representative brand visuals + framework for genuine work.'),('Testimonials','LIVE — MODERATED','Portfolio form submits to Supabase; public page shows only approved submissions with consent.'),('Store','ENQUIRY-BASED','No cart, checkout or payment system.'),('Academy registration','ENQUIRY-BASED','Email-first registration request; no student database.'),('Client / admin portal','LIVE — AUTHENTICATED','Supabase Auth, role/account access and Row Level Security; testimonial moderation is admin-only.'),('Online checkout/payments','NOT IMPLEMENTED','Store is enquiry-led; no online payment processor.'),('Custom domain','NOT YET CONNECTED','Current GitHub Pages URL remains live.'),('Professional domain email','NOT YET CONNECTED','Current Gmail remains primary.'),('Official social links','ADD WHEN CONFIRMED','Only add verified official accounts.'),
+('Email enquiries','LIVE','Primary contact method; mailto-based.'),('WhatsApp enquiries','LIVE','Secondary option.'),('GitHub Pages hosting','LIVE','Automatic deployment from main.'),('Responsive/mobile layout','LIVE','Controlled by styles.css and media.css.'),('Policies','LIVE','Privacy, Terms, Booking/Cancellation, Store/Returns.'),('SEO metadata','LIVE','Base metadata + route-specific titles/descriptions.'),('Analytics','CONFIGURED — ID MATCHED','site-config.js contains G-3ECH94LV1S, and the latest GA4 stream check showed recent traffic.'),('Portfolio structure','LIVE','Representative brand visuals + framework for genuine work.'),('Testimonials','LIVE — MODERATED','Portfolio form submits to Supabase; public page shows only approved submissions with consent.'),('Store','ENQUIRY-BASED','No cart, checkout or payment system.'),('Academy registration','ENQUIRY-BASED','Email-first registration request; no student database.'),('Client / admin portal','LIVE — AUTHENTICATED','Supabase Auth, role/account access and Row Level Security; testimonial moderation is admin-only.'),('Online checkout/payments','NOT IMPLEMENTED','Store is enquiry-led; no online payment processor.'),('Custom domain','NOT YET CONNECTED','Current GitHub Pages URL remains live.'),('Professional domain email','NOT YET CONNECTED','Current Gmail remains primary.'),('Official social links','ADD WHEN CONFIRMED','Only add verified official accounts.'),
 ]
 add_table(doc, ['Feature', 'Status', 'Meaning'], status_rows, widths=[Cm(4.6),Cm(3.7),Cm(8.8)], small=True)
 
@@ -855,6 +852,8 @@ add_heading(doc, 'Appendix C — Website and Handbook Change Log', 1)
 add_body(doc, 'Use this table whenever an important website or handbook update is made. Keeping a simple log helps future owners understand why something changed.')
 change_rows = [
 ('12 Oct 2026','1.0','Initial owner handbook created after public website completion, partnership integration, email-first contact, image expansion, policies, SEO and analytics readiness.','Website team'),
+('21 Oct 2026','1.1','Documented authenticated portal, moderated client feedback, free visitor resource and site analytics configuration.','Website team'),
+('22 Oct 2026','1.2','Corrected portal and analytics instructions; documented the confirmed Measurement ID and current visitor guide.','Website team'),
 ('','','','',''),('','','','',''),('','','','',''),('','','','',''),('','','','','')
 ]
 add_table(doc, ['Date', 'Version', 'Change made', 'Updated by'], [r[:4] for r in change_rows], widths=[Cm(3.0),Cm(2.2),Cm(9.0),Cm(3.0)], small=True)
@@ -906,6 +905,37 @@ add_table(doc, ['Feature', 'Current status', 'Meaning'], [
 ('Custom domain and professional email','NOT CONNECTED','Use the current GitHub Pages URL and Gmail.')
 ], widths=[Cm(4.1), Cm(3.8), Cm(9.6)], small=True)
 add_body(doc, 'Backend project ref: kqpbdagawllgonzoloao. Keep the Elyra database and its credentials separate from Eragonova. The GitHub Pages workflow uses the existing checked-in guide PDF if temporary guide decoding is not available.')
+
+
+# 17 CURRENT VISITOR RESOURCE AND ANALYTICS UPDATES
+add_heading(doc, '17. Current Visitor Resource and Analytics Updates', 1)
+add_body(doc, 'Release notes for the site as of 22 October 2026.')
+add_heading(doc, 'Free Healthy Makeup and Natural Beauty Guide', 2)
+add_bullets(doc, [
+    'Elyra offers a free visitor guide called Healthy Makeup & Natural Beauty. It is available without signup or payment and includes a one-page PDF download.',
+    'The guide route is #/makeupguide and the downloadable file is assets/Elyra_Suite_Healthy_Makeup_Guide.pdf. The promotional banner and page text are maintained in visitor-freebie.js; confirm the route wiring and PDF filename before replacing either.',
+    'The guide presents makeup as optional self-expression, supports clean-tool and skin-care habits, and advises readers to stop using products that cause irritation. Do not present it as medical diagnosis or treatment.'
+])
+add_heading(doc, 'Analytics configuration and verification', 2)
+add_bullets(doc, [
+    'Elyra analytics is loaded by analytics.js from site-config.js. The current Google Analytics 4 Measurement ID is G-3ECH94LV1S, matching the Elyra web stream shown as receiving traffic in the latest Analytics check.',
+    'After a future configuration change, verify the ID in Analytics Admin and check Realtime after visiting the live site. Hash-route page views should be checked while navigating between pages.',
+    'Keep the Privacy Policy accurate about analytics and information visitors submit through contact or testimonial forms.'
+])
+add_heading(doc, 'Feedback moderation and visitor privacy', 2)
+add_bullets(doc, [
+    'Client feedback submitted through the website is not published automatically. An authorized administrator reviews each genuine submission and confirms publication consent before approval.',
+    'Use the secure admin portal to review pending feedback. Do not create fictional testimonials, alter feedback into a false claim or publish private screenshots without permission.',
+    'Reading or downloading the free guide does not require account creation.'
+])
+add_heading(doc, 'Current release checks', 2)
+add_bullets(doc, [
+    'Open #/makeupguide and test the one-page PDF download on desktop and phone.',
+    'Check the guide and promotional banner at desktop and phone-sized widths.',
+    'Test analytics in the correct Elyra GA4 property after navigating between hash routes.',
+    'Keep genuine client material and permission records separate from public visitor-resource content.'
+])
+
 
 # Header after content - section first page remains different
 header = doc.sections[0].header
