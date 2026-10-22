@@ -15,7 +15,7 @@ Current GitHub Pages address:
 Browser-safe settings are kept in `site-config.js`:
 
 - site base URL
-- Google Analytics Measurement ID (blank until a real ID is supplied)
+- Google Analytics 4 Measurement ID: `G-3ECH94LV1S` (configured in `site-config.js`)
 - Eragonova Enterprise strategic-partner URL
 - official social-media URLs when confirmed
 
