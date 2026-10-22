@@ -9,6 +9,7 @@ from docx.enum.style import WD_STYLE_TYPE
 from docx.enum.text import WD_BREAK
 from docx.enum.table import WD_ROW_HEIGHT_RULE
 from pathlib import Path
+from PIL import Image
 
 OUT = 'docs/Elyra_Suite_Website_Owners_Handbook.docx'
 LOGO = 'docs/Elyra_Suite_Luxury_Monogram_Logo.jpg'
@@ -244,7 +245,17 @@ for section in doc.sections:
 # COVER
 p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER; p.paragraph_format.space_before = Pt(36)
 if Path(LOGO).exists():
-    run = p.add_run(); run.add_picture(LOGO, width=Inches(2.35))
+    # Re-encode the supplied logo before embedding. Some JPEG encoders produce
+    # files that Pillow can read but python-docx cannot identify reliably.
+    normalized_logo = Path('/tmp/elyra-handbook-logo.jpg')
+    try:
+        with Image.open(LOGO) as source_logo:
+            source_logo.load()
+            source_logo.convert('RGB').save(normalized_logo, format='JPEG', quality=95)
+        run = p.add_run()
+        run.add_picture(str(normalized_logo), width=Inches(2.35))
+    except Exception as exc:
+        print(f'Warning: handbook logo could not be normalized and will be omitted: {exc}')
 
 p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER; p.paragraph_format.space_before = Pt(12)
 r = p.add_run('ELYRA SUITE'); set_run_font(r, 'Liberation Serif'); r.bold=True; r.font.size=Pt(30); r.font.color.rgb=RGBColor.from_string(PLUM)
